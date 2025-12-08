@@ -3,7 +3,7 @@ session_start();
 require_once 'config/database.php';
 require_once 'includes/functions.php';
 
-// ✅ PROCESAR CARRITO PRIMERO (sin importar el action)
+// PROCESAR CARRITO PRIMERO (sin importar el action)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
     error_log("DEBUG: POST recibido, add_to_cart = " . $_POST['add_to_cart']);
     error_log("DEBUG: user_id = " . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'NO EXISTE'));

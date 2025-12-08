@@ -14,38 +14,10 @@ if (isset($_POST['add_product'])) {
     $price = (float) $_POST['price'];
     $stock = (int) $_POST['stock'];
     $category_id = (int) $_POST['category_id'];
-    $image = '';
     
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $tmp_name = $_FILES['image']['tmp_name'];
-        $file_name = $_FILES['image']['name'];
-        $file_size = $_FILES['image']['size'];
-        $file_type = $_FILES['image']['type'];
-        
-        $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
-        $max_size = 2 * 1024 * 1024;
-        
-        if (in_array($file_type, $allowed_types) && $file_size <= $max_size) {
-            $image = time() . '_' . basename($file_name);
-            $upload_path = '../public/images/' . $image;
-            
-            if (!is_dir('../public/images')) {
-                mkdir('../public/images', 0755, true);
-            }
-            
-            if (move_uploaded_file($tmp_name, $upload_path)) {
-                $message = '<div class="alert alert-success">✅ Product added with image!</div>';
-            } else {
-                $message = '<div class="alert alert-error">❌ Error uploading image</div>';
-            }
-        } else {
-            $message = '<div class="alert alert-error">❌ Invalid file (max 2MB, JPG/PNG/GIF only)</div>';
-        }
-    }
-    
-    $query = "INSERT INTO products (name, description, price, stock, category_id, image) VALUES (?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO products (name, description, price, stock, category_id) VALUES (?, ?, ?, ?, ?)";
     $statement = $connection->prepare($query);
-    $statement->bind_param("ssdiis", $name, $description, $price, $stock, $category_id, $image);
+    $statement->bind_param("ssdii", $name, $description, $price, $stock, $category_id);
     
     if ($statement->execute()) {
         if (empty($message)) {
@@ -65,48 +37,9 @@ if (isset($_POST['update_product'])) {
     $stock = (int) $_POST['stock'];
     $category_id = (int) $_POST['category_id'];
     
-    // Get current product
-    $query = "SELECT image FROM products WHERE id = ?";
+    $query = "UPDATE products SET name = ?, description = ?, price = ?, stock = ?, category_id = ? WHERE id = ?";
     $statement = $connection->prepare($query);
-    $statement->bind_param("i", $product_id);
-    $statement->execute();
-    $current = $statement->get_result()->fetch_assoc();
-    $image = $current['image'];
-    
-    // Handle new image if uploaded
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $tmp_name = $_FILES['image']['tmp_name'];
-        $file_name = $_FILES['image']['name'];
-        $file_size = $_FILES['image']['size'];
-        $file_type = $_FILES['image']['type'];
-        
-        $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
-        $max_size = 2 * 1024 * 1024;
-        
-        if (in_array($file_type, $allowed_types) && $file_size <= $max_size) {
-            // Delete old image
-            if (!empty($image)) {
-                $old_path = '../public/images/' . $image;
-                if (file_exists($old_path)) {
-                    unlink($old_path);
-                }
-            }
-            
-            // Upload new image
-            $image = time() . '_' . basename($file_name);
-            $upload_path = '../public/images/' . $image;
-            
-            if (move_uploaded_file($tmp_name, $upload_path)) {
-                $message = '<div class="alert alert-success">✅ Image updated!</div>';
-            } else {
-                $message = '<div class="alert alert-error">❌ Error uploading image</div>';
-            }
-        }
-    }
-    
-    $query = "UPDATE products SET name = ?, description = ?, price = ?, stock = ?, category_id = ?, image = ? WHERE id = ?";
-    $statement = $connection->prepare($query);
-    $statement->bind_param("ssdiiis", $name, $description, $price, $stock, $category_id, $image, $product_id);
+    $statement->bind_param("ssdiii", $name, $description, $price, $stock, $category_id, $product_id);
     
     if ($statement->execute()) {
         if (empty($message)) {
@@ -120,19 +53,6 @@ if (isset($_POST['update_product'])) {
 // Delete product
 if (isset($_GET['delete'])) {
     $id = (int) $_GET['delete'];
-    
-    $query = "SELECT image FROM products WHERE id = ?";
-    $statement = $connection->prepare($query);
-    $statement->bind_param("i", $id);
-    $statement->execute();
-    $product = $statement->get_result()->fetch_assoc();
-    
-    if ($product && !empty($product['image'])) {
-        $image_path = '../public/images/' . $product['image'];
-        if (file_exists($image_path)) {
-            unlink($image_path);
-        }
-    }
     
     $query = "DELETE FROM products WHERE id = ?";
     $statement = $connection->prepare($query);
@@ -170,8 +90,6 @@ if (isset($_GET['edit'])) {
         .edit-view { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
         .form-section { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .form-section h3 { margin-top: 0; color: #2c3e50; }
-        .image-preview { max-width: 150px; border-radius: 8px; margin: 10px 0; }
-        .product-image-cell { text-align: center; }
         .cancel-edit { margin-top: 10px; }
         @media (max-width: 768px) {
             .edit-view { grid-template-columns: 1fr; }
@@ -235,18 +153,6 @@ if (isset($_GET['edit'])) {
                             </select>
                         </div>
                         
-                        <div class="form-group">
-                            <label>Product Image:</label>
-                            <?php if (!empty($edit_product['image'])): ?>
-                                <div>
-                                    <img src="../public/images/<?php echo htmlspecialchars($edit_product['image']); ?>" class="image-preview" alt="Product">
-                                    <p><small>Current image</small></p>
-                                </div>
-                            <?php endif; ?>
-                            <input type="file" name="image" accept="image/jpeg,image/png,image/gif">
-                            <small>Leave empty to keep current image</small>
-                        </div>
-                        
                         <button type="submit" name="update_product" class="btn btn-primary">Save Changes</button>
                         <a href="products.php" class="btn btn-secondary cancel-edit">Cancel Edit</a>
                     </form>
@@ -301,12 +207,6 @@ if (isset($_GET['edit'])) {
                         </select>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Product Image:</label>
-                        <input type="file" name="image" accept="image/jpeg,image/png,image/gif">
-                        <small>Max 2MB. Formats: JPG, PNG, GIF</small>
-                    </div>
-                    
                     <button type="submit" name="add_product" class="btn btn-primary">Add Product</button>
                 </form>
             </div>
@@ -318,7 +218,6 @@ if (isset($_GET['edit'])) {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Image</th>
                         <th>Name</th>
                         <th>Price</th>
                         <th>Stock</th>
@@ -330,13 +229,6 @@ if (isset($_GET['edit'])) {
                     <?php foreach ($products as $product): ?>
                     <tr>
                         <td><?php echo $product['id']; ?></td>
-                        <td class="product-image-cell">
-                            <?php if (!empty($product['image'])): ?>
-                                <img src="../public/images/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="max-width: 80px; max-height: 80px; border-radius: 6px;">
-                            <?php else: ?>
-                                <span style="color: #999;">No image</span>
-                            <?php endif; ?>
-                        </td>
                         <td><?php echo htmlspecialchars($product['name']); ?></td>
                         <td>$<?php echo number_format($product['price'], 2); ?></td>
                         <td><?php echo $product['stock']; ?></td>

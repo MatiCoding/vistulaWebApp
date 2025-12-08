@@ -22,7 +22,7 @@ if ($view_order) {
     $order_details = $statement->get_result()->fetch_assoc();
     
     if ($order_details) {
-        $query = "SELECT od.*, p.name, p.image FROM order_details od 
+        $query = "SELECT od.*, p.name FROM order_details od 
                   JOIN products p ON od.product_id = p.id 
                   WHERE od.order_id = ?";
         $statement = $connection->prepare($query);
@@ -68,13 +68,13 @@ if ($view_order) {
                         <?php
                         // Intenta traer dirección del campo order_address si existe
                         // Si no, usa la dirección actual del usuario
-                        $query = "SELECT address FROM users WHERE id = ?";
+                        $query = "SELECT shipping_address FROM orders WHERE id = ?";
                         $statement = $connection->prepare($query);
-                        $statement->bind_param("i", $user_id);
+                        $statement->bind_param("i", $order_details['id']);
                         $statement->execute();
                         $user = $statement->get_result()->fetch_assoc();
                         ?>
-                        <p><?php echo nl2br(htmlspecialchars($user['address'] ?? 'Address not provided')); ?></p>
+                        <p><?php echo nl2br(htmlspecialchars($user['shipping_address'] ?? 'Address not provided')); ?></p>
                     </div>
                 </div>
             </div>

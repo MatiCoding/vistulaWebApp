@@ -141,20 +141,6 @@ body {
     padding: 0 20px;
 }
 
-/* ============================================
-   HERO SECTION
-   ============================================ */
-
-.hero {
-    text-align: center;
-    padding: 80px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-radius: 15px;
-    box-shadow: var(--box-shadow-lg);
-    margin-bottom: 40px;
-}
-
 .hero h2 {
     font-size: 52px;
     margin-bottom: 15px;
@@ -165,23 +151,6 @@ body {
     font-size: 20px;
     margin-bottom: 30px;
     opacity: 0.95;
-}
-
-/* ============================================
-   BUTTONS
-   ============================================ */
-
-.btn {
-    padding: 12px 28px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 15px;
-    font-weight: 600;
-    transition: var(--transition);
-    text-align: center;
 }
 
 .btn-primary {
@@ -444,17 +413,6 @@ body {
     background-color: var(--primary-hover);
 }
 
-/* Filters Section */
-.filters-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
-    padding: 20px;
-    background-color: var(--lighter-bg);
-    border-radius: 10px;
-}
-
 .filters-section h3 {
     font-size: 16px;
     color: var(--text-dark);
@@ -466,19 +424,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
-
-.category-item {
-    padding: 10px 15px;
-    background-color: white;
-    border: 2px solid var(--light-bg);
-    border-radius: 6px;
-    text-decoration: none;
-    color: var(--text-dark);
-    transition: var(--transition);
-    cursor: pointer;
-    font-weight: 500;
-    text-align: left;
 }
 
 .category-item:hover,
@@ -540,21 +485,6 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
     gap: 24px;
-}
-
-.product-card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    transition: var(--transition);
-    box-shadow: var(--box-shadow);
-    display: flex;
-    flex-direction: column;
-}
-
-.product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--box-shadow-lg);
 }
 
 .product-image {
@@ -1134,13 +1064,6 @@ body {
     gap: 8px;
 }
 
-/* Better Category Filter */
-.categories-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
 .category-item {
     padding: 10px 15px;
     background-color: white;
@@ -1187,11 +1110,6 @@ body {
     
     .filter-column:last-child {
         border-bottom: none;
-    }
-    
-    .user-dropdown {
-        right: auto;
-        left: -100px;
     }
 }
 
@@ -1263,18 +1181,6 @@ body {
     opacity: 0.1;
 }
 
-/* ============================================
-   ENHANCED FOOTER
-   ============================================ */
-
-.footer {
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    color: white;
-    text-align: center;
-    padding: 40px 20px;
-    margin-top: 60px;
-}
-
 .footer p {
     margin: 0;
     font-size: 14px;
@@ -1294,24 +1200,6 @@ button:disabled::after {
     content: ' ...';
 }
 
-.user-greeting {
-    display: block;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    color: white;
-    font-weight: 600;
-}
-
-.user-greeting:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-}
-
-.navbar .menu {
-    align-items: center;
-}
-
 /* ============================================
    USER DROPDOWN MENU - FIXED
    ============================================ */
@@ -1320,21 +1208,6 @@ button:disabled::after {
     position: relative;
     display: flex;
     align-items: center;
-}
-
-.user-greeting {
-    display: block;
-    padding: 10px 16px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-    color: white;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.user-greeting:hover {
-    background-color: rgba(255, 255, 255, 0.15);
 }
 
 .user-dropdown {
